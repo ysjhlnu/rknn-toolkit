@@ -18,7 +18,8 @@ BOX_THRESH = 0.5
 NMS_THRESH = 0.6
 IMG_SIZE = 640
  
-CLASSES = ["wildfires"]
+# CLASSES = ["wildfires"]
+CLASSES =("wildfires","balloon","kite","nest","trash","","foreign_body")
  
 def sigmoid(x):
     return 1 / (1 + np.exp(-x))

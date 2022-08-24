@@ -9,8 +9,8 @@ import cv2
 from rknn.api import RKNN
  
  
-RKNN_MODEL = 'yolov5s_relu_rk180x_out_opt.rknn'
-IMG_PATH = './test2.jpeg'
+RKNN_MODEL = 'self.rknn'
+IMG_PATH = 'test2.jpeg'
  
 QUANTIZE_ON = True
  
@@ -211,14 +211,16 @@ def letterbox(im, new_shape=(640, 640), color=(0, 0, 0)):
  
 if __name__ == '__main__':
  
-    # Create RKNN object
+
     rknn = RKNN()
- 
     if not os.path.exists(RKNN_MODEL):
         print('model not exist')
         exit(-1)
+        
+    if not os.path.exists(IMG_PATH):
+        print('img not exist')
+        exit(-1)
  
-    # Load ONNX model
     print('--> Loading model')
     ret = rknn.load_rknn(RKNN_MODEL)
     if ret != 0:
@@ -228,8 +230,8 @@ if __name__ == '__main__':
  
     # init runtime environment
     print('--> Init runtime environment')
-    ret = rknn.init_runtime()
-    # ret = rknn.init_runtime('rk1808', device_id='1808')
+    # ret = rknn.init_runtime()
+    ret = rknn.init_runtime('rk1808', device_id='aa0396388a94b1fb')     # 连接板子推理
     if ret != 0:
         print('Init runtime environment failed')
         exit(ret)

@@ -240,7 +240,8 @@ if __name__ == '__main__':
 
     print('--> Loading model')
     # ret = rknn.load_onnx(model=ONNX_MODEL,inputs=['images'],outputs=['303', '304'],input_size_list=[[3,640,640]],)
-    ret = rknn.load_onnx(model=ONNX_MODEL,inputs=['images'],input_size_list=[[3,640,640]],)
+    ret = rknn.load_onnx(model=ONNX_MODEL,inputs=['images'],input_size_list=[[3,640,640]],) # inputs填了就必须填input_size_list
+    # outputs 为None工具将自动从模型中搜索输出节点
     if ret != 0:
         print('Load onnx model failed!')
         exit(ret)
@@ -279,8 +280,8 @@ if __name__ == '__main__':
 
     # Inference
     print('--> Running model')
-    outputs = rknn.inference(inputs=[img])
-
+    outputs = rknn.inference(inputs=[img])      # inputs：待推理的输入，如经过 cv2 处理的图片。格式是 ndarray list
+    # rknn.eval_perf(inputs=[img], is_print=True) # 模型性能评估
     # post process
     input0_data = outputs[0]
     input1_data = outputs[1]

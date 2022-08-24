@@ -1,1 +1,2 @@
-bus.jpg
+/home/ts/fsdownload/nest_10.jpg
+/home/ts/fsdownload/nest_90.jpg

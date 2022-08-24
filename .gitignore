@@ -1,1 +1,3 @@
 *.rknn
+*.onnx
+examples/onnx/yolov5/*.rknn

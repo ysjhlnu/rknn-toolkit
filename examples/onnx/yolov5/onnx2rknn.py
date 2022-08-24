@@ -8,7 +8,7 @@ RKNN_MODEL = 'yolov5s_relu_rk180x_out_opt.rknn'
  
 if __name__ == '__main__':
  
-    # Create RKNN object
+
     rknn = RKNN(verbose=True)
  
     # pre-process config
@@ -29,7 +29,7 @@ if __name__ == '__main__':
         exit(ret)
     print('done')
  
-    # Build model
+
     print('--> Building model')
     ret = rknn.build(do_quantization=True, dataset='./dataset.txt')
     if ret != 0:
@@ -37,7 +37,6 @@ if __name__ == '__main__':
         exit(ret)
     print('done')
  
-    # Export rknn model
     print('--> Export RKNN model')
     ret = rknn.export_rknn(RKNN_MODEL)
     if ret != 0:

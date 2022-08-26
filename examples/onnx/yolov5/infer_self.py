@@ -9,8 +9,8 @@ import cv2
 from rknn.api import RKNN
  
  
-RKNN_MODEL = 'self.rknn'
-IMG_PATH = 'test2.jpeg'
+RKNN_MODEL = './self_pre_compile.rknn'
+IMG_PATH = '/home/ts/Downloads/w1.png'
  
 QUANTIZE_ON = True
  
@@ -19,7 +19,7 @@ NMS_THRESH = 0.6
 IMG_SIZE = 640
  
 # CLASSES = ["wildfires"]
-CLASSES =("wildfires","balloon","kite","nest","trash","","foreign_body")
+CLASSES =('car','tower_crane','truck','crane','excavator')
  
 def sigmoid(x):
     return 1 / (1 + np.exp(-x))
@@ -186,34 +186,52 @@ def draw(image, boxes, scores, classes):
  
  
 def letterbox(im, new_shape=(640, 640), color=(0, 0, 0)):
+    """_summary_
+
+    Args:
+        im (_type_): 要处理的图片
+        new_shape (tuple, optional): 新的大小. Defaults to (640, 640).
+        color (tuple, optional): 颜色. Defaults to (0, 0, 0).
+
+    Returns:
+        im (_type_): 处理后的图片
+        ratio(tuple): 缩放比例
+        wh(tuple): 每边补多少宽度和高度
+    """
     # Resize and pad image while meeting stride-multiple constraints
     shape = im.shape[:2]  # current shape [height, width]
+    print("height: ", shape[0], "width: ", shape[1])
     if isinstance(new_shape, int):
         new_shape = (new_shape, new_shape)
  
     # Scale ratio (new / old)
-    r = min(new_shape[0] / shape[0], new_shape[1] / shape[1])
+    r = min(new_shape[0] / shape[0], new_shape[1] / shape[1])   # 缩放比例
  
     # Compute padding
     ratio = r, r  # width, height ratios
-    new_unpad = int(round(shape[1] * r)), int(round(shape[0] * r))
+    new_unpad = int(round(shape[1] * r)), int(round(shape[0] * r))  # 填补的宽度,padd_w和padd_h其中一个是零
+    print("new_unpad: ",new_unpad)
     dw, dh = new_shape[1] - new_unpad[0], new_shape[0] - new_unpad[1]  # wh padding
  
-    dw /= 2  # divide padding into 2 sides
+    dw /= 2  # divide padding into 2 sides 每边填充多少
     dh /= 2
  
     if shape[::-1] != new_unpad:  # resize
         im = cv2.resize(im, new_unpad, interpolation=cv2.INTER_LINEAR)
     top, bottom = int(round(dh - 0.1)), int(round(dh + 0.1))
     left, right = int(round(dw - 0.1)), int(round(dw + 0.1))
+    # top, bottom, left, right分别表示在原图四周扩充边缘的大小
     im = cv2.copyMakeBorder(im, top, bottom, left, right, cv2.BORDER_CONSTANT, value=color)  # add border
     return im, ratio, (dw, dh)
  
  
 if __name__ == '__main__':
- 
+    if len(sys.argv) >= 2:
+        img = sys.argv[1]
+        if img is not None:
+            IMG_PATH = img
 
-    rknn = RKNN()
+    rknn = RKNN(verbose=True)
     if not os.path.exists(RKNN_MODEL):
         print('model not exist')
         exit(-1)
@@ -221,6 +239,9 @@ if __name__ == '__main__':
     if not os.path.exists(IMG_PATH):
         print('img not exist')
         exit(-1)
+        
+    sdk_version  = rknn.get_sdk_version()
+    print(sdk_version)
  
     print('--> Loading model')
     ret = rknn.load_rknn(RKNN_MODEL)
@@ -240,11 +261,13 @@ if __name__ == '__main__':
  
     # Set inputs
     img = cv2.imread(IMG_PATH)
-    print(img.shape)
-    # img, ratio, (dw, dh) = letterbox(img, new_shape=(IMG_SIZE, IMG_SIZE))
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    print(img.shape)    # 输出是(H, W, C)
+    img, ratio, (dw, dh) = letterbox(img, new_shape=(IMG_SIZE, IMG_SIZE))  # 填补缩放处理
+    print("ratio: ", ratio)
+    print("dw, dh: ", dw, dh)
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)  # 颜色空间转换
     img = cv2.resize(img,(IMG_SIZE, IMG_SIZE))
-    print(img.shape)
+
     # Inference
     print('--> Running model')
     outputs = rknn.inference(inputs=[img])

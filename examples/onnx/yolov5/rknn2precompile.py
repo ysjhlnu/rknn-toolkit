@@ -2,14 +2,15 @@ from rknn.api import RKNN
 
 # 导出预编译模型（在线预编译）
 
-
+INPUT_RKNN_MODEL = 'self.rknn'
+OUPUT_RKNN_MODEL = './self_pre_compile.rknn'
 
 if __name__ == '__main__':
     # Create RKNN object
     rknn = RKNN()
     
 # Load rknn model
-ret = rknn.load_rknn('./self.rknn')
+ret = rknn.load_rknn(INPUT_RKNN_MODEL)
 if ret != 0:
     print('Load RKNN model failed.')
     exit(ret)
@@ -21,7 +22,7 @@ if ret != 0:
     exit(ret)
     
 # Note: the rknn2precompile must be set True when call init_runtime
-ret = rknn.export_rknn_precompile_model('./self_pre_compile.rknn')
+ret = rknn.export_rknn_precompile_model(OUPUT_RKNN_MODEL)
 if ret != 0:
     print('export pre-compile model failed.')
     exit(ret)

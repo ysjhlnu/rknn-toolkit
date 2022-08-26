@@ -8,10 +8,10 @@ import cv2
 from rknn.api import RKNN
 
 
-ONNX_MODEL = '1*33*20*20.onnx'
+ONNX_MODEL = 'best_car_202208260827.onnx'
 RKNN_MODEL = 'self.rknn'
-IMG_PATH = './test2.jpeg'
-DATASET = './dataset.txt'
+IMG_PATH = '/home/ts/Downloads/w1.png'
+DATASET = './car_dataset.txt'
 
 QUANTIZE_ON = True
 
@@ -19,7 +19,7 @@ BOX_THRESH = 0.5
 NMS_THRESH = 0.6
 IMG_SIZE = 640
 
-CLASSES = ("wildfires","balloon","kite","nest","trash","","foreign_body")
+CLASSES = ('car','tower_crane','truck','crane','excavator')
 
 def sigmoid(x):
     return 1 / (1 + np.exp(-x))
